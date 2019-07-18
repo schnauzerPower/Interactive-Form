@@ -14,6 +14,7 @@ $(yourRoleInput).hide();
 
 const title = document.getElementById('title');
 
+
 title.addEventListener('change', function(){
     if(title.value === 'other') {
         $(yourRoleLabel).show();
@@ -62,11 +63,91 @@ designSelection.addEventListener('change', function(){
     }
 });
 
+//User cannot select two activities that are at the same time. Total cost of selected activities is calculated and displayed below the list of activities.
 const checkboxes = document.querySelectorAll('[type="checkbox"]');
 const activities = document.querySelector('.activities');
+const totalCost = document.createElement('p');
+activities.appendChild(totalCost);
+totalCost.innerHTML = "Total: $<span class='amount'></span>";
+const dollarAmount = document.querySelector('.amount');
+let num = 0;
+dollarAmount.innerHTML = num;
+
+
+function disableCheckboxes(event, className) {
+    
+    for(var i = 0; i < checkboxes.length; i++) {
+        if($(event.target).prop('checked') === true && checkboxes[i].classList.contains(className) && $(checkboxes[i]).prop('checked')===false) {
+            checkboxes[i].disabled = true;
+        }
+        else if($(event.target).prop('checked') === false && checkboxes[i].disabled === true && checkboxes[i].classList.contains(className)) {
+            checkboxes[i].disabled = false;
+        }
+    }
+}
+
+function calculateTotalCost(event) {
+    const str = event.target.parentElement.textContent;
+    const cost = parseInt(str.slice(str.length - 3, str.length));
+    if($(event.target).prop('checked')=== true) {
+        num += cost;
+    }
+    else {
+        num -= cost;
+    }
+    dollarAmount.innerHTML = num;
+}
+
 
 activities.addEventListener('change', function(event){
+    calculateTotalCost(event);
     if(event.target.classList.contains('tuesdayMorning')) {
-        console.log('it worked');
+        disableCheckboxes(event, "tuesdayMorning");
+    }
+    else if(event.target.classList.contains('tuesdayAfternoon')) {
+        disableCheckboxes(event, "tuesdayAfternoon");
     }
 });
+
+//The "Credit Card" payment option is selected by default.
+
+$("#payment").val("credit card");
+const paymentSelection = document.getElementById('payment');
+const creditCardInfo = document.getElementById('credit-card');
+const payPalSelected = document.getElementById('payPalSelected');
+const bitCoinSelected = document.getElementById('payPalSelected');
+paymentSelection.remove(0);
+$(payPalSelected).hide();
+$(bitcoinSelected).hide();
+payPalSelected.innerHTML = "We'll take you to Paypal's site to set up your billing information, when you click “Register” below."
+bitcoinSelected.innerHTML = "We'll take you to the Coinbase site to set up your billing information, when you click “Register” below."
+
+paymentSelection.addEventListener('change', function(event){
+    
+    if(event.target.value === 'credit card') {
+        $(creditCardInfo).show();
+        $(payPalSelected).hide();
+        $(bitcoinSelected).hide();
+    }
+    else if(event.target.value === 'paypal')  {
+        $(payPalSelected).show();
+        $(creditCardInfo).hide();
+        $(bitcoinSelected).hide();
+    }
+    else {
+        $(bitcoinSelected).show();
+        $(payPalSelected).hide();
+        $(creditCardInfo).hide();   
+    }
+});
+
+const btn = document.querySelector('button');
+
+btn.addEventListener('click', function(){
+    
+    
+});
+
+
+
+

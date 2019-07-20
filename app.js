@@ -141,11 +141,66 @@ paymentSelection.addEventListener('change', function(event){
     }
 });
 
-const btn = document.querySelector('button');
+//Check criteria for form submission
 
-btn.addEventListener('click', function(){
+function isCheckBoxSelected() {
+    let selectedCheckBoxes = 0;
+    for(var i = 0; i < checkboxes.length; i++) {
+        if($(checkboxes[i]).prop('checked') === true) {
+            selectedCheckBoxes++;
+        }
+    }
+    return selectedCheckBoxes > 0;
+}
+
+function addOrRemoveErrorMessages(input, label, message) {
+    if(!input) {
+            label.classList.add('clearfix');
+            $(label).attr('content', message); // Found code at: https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin?lq=1 by username: Nick Kline and edited by username: Eric
+        }
+        else {
+            console.log('It is truthy');
+            label.classList.remove('clearfix');
+        }
+}
+
+const btn = document.querySelector('button');
+btn.addEventListener('click', function(event){
     
+    const emailInput = document.getElementsByTagName('input')[1];
+    const ccNumber = document.getElementById('cc-num');
+    const zipCode = document.getElementById('zip');
+    const cvv = document.getElementById('cvv');
+    const nameLabel = document.getElementsByTagName('label')[0];
+    const emailLabel = document.getElementsByTagName('label')[1];
+    const activitiesLabel = document.getElementsByTagName('legend')[2];
+    const ccNumberLabel = document.querySelector('.col-6 label');
+    const zipCodeLabel = document.querySelector('label[for="zip"]');
+    const cvvLabel = document.querySelector('label[for="cvv"]');
     
+    const nameInputHasValue = nameInput.value !== "";
+    const emailInputHasValidValue = /^[^@]+@[^.]+\.\w+$/.test(emailInput.value);
+    const ccNumberHasValidValue = /^\d{13,15}$/.test(ccNumber.value);
+    const zipCodeHasValidValue = /^\d{5}$/.test(zipCode.value);
+    const cvvHasValidValue = /^\d{3}$/.test(cvv.value);
+    
+   
+    
+    if(!nameInputHasValue || !emailInputHasValidValue || !isCheckBoxSelected() || !ccNumberHasValidValue ||
+      !zipCodeHasValidValue || !cvvHasValidValue) {
+        
+        event.preventDefault();
+        addOrRemoveErrorMessages(nameInputHasValue, nameLabel, 'Name is required');
+        addOrRemoveErrorMessages(emailInputHasValidValue, emailLabel, 'Invalid email');
+        addOrRemoveErrorMessages(isCheckBoxSelected(), activitiesLabel, 'You must select at least one activity');
+        
+        if($('#payment').val() === "credit card") {
+            
+            addOrRemoveErrorMessages(ccNumberHasValidValue, ccNumberLabel, 'Invalid credit card number');
+            addOrRemoveErrorMessages(zipCodeHasValidValue, zipCodeLabel, 'Invalid zip code');
+            addOrRemoveErrorMessages(cvvHasValidValue, cvvLabel, 'Invalid cvv');
+        }
+    } 
 });
 
 

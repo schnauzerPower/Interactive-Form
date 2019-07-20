@@ -159,9 +159,10 @@ option {
 }
 
 .clearfix::after {
-  content: " ";
+  content: attr(content);
   display: table;
   clear: both;
+  color: red;
 }
 
 /* ================================= 

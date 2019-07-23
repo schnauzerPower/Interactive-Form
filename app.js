@@ -3,9 +3,6 @@ const nameInput = document.getElementsByTagName('input')[0];
 $(nameInput).focus();
 const tooltip = document.querySelector('.tooltip');
 
-//A
-
-
 //2. JOB ROLE SECTION 
 
 //Hide 'other' label and input field 
@@ -173,7 +170,8 @@ emailInput.addEventListener('input', function(){
     }
 });
 
-//check if all criteria are met on form submission. Fields have different error message depending on whether they are left left blank or input is invalid.
+//check if all criteria are met on form submission. Fields have different error message depending on whether they are left left blank or 
+//input is invalid.
 const btn = document.querySelector('button');
 btn.addEventListener('click', function(event){
     const emailInput = document.getElementsByTagName('input')[1];

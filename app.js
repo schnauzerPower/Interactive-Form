@@ -1,6 +1,10 @@
 //1.FOCUS ON THE FIRST FIELD
 const nameInput = document.getElementsByTagName('input')[0];
 $(nameInput).focus();
+const tooltip = document.querySelector('.tooltip');
+
+//A
+
 
 //2. JOB ROLE SECTION 
 
@@ -157,10 +161,21 @@ paymentSelection.addEventListener('change', function(event){
 
 //6. FORM VALIDATION
 
-//check if all criteria are met on form submission
+//error message in real time on email input field
+const emailInput = document.getElementsByTagName('input')[1];
+emailInput.addEventListener('input', function(){
+    const emailInputHasValidValue = /^[^@]+@[^.]+\.[a-z]+$/.test(emailInput.value);
+    if(!emailInputHasValidValue) {
+        tooltip.style.display = 'inline';
+    }
+    else {        
+         tooltip.style.display = 'none';
+    }
+});
+
+//check if all criteria are met on form submission. Fields have different error message depending on whether they are left left blank or input is invalid.
 const btn = document.querySelector('button');
 btn.addEventListener('click', function(event){
-    
     const emailInput = document.getElementsByTagName('input')[1];
     const ccNumber = document.getElementById('cc-num');
     const zipCode = document.getElementById('zip');
@@ -173,26 +188,30 @@ btn.addEventListener('click', function(event){
     const cvvLabel = document.querySelector('label[for="cvv"]');
     
     const nameInputHasValue = nameInput.value !== "";
-    const emailInputHasValidValue = /^[^@]+@[^.]+\.\w+$/.test(emailInput.value);
+    const nameValue = nameInput.value;
+    const emailInputHasValidValue = /^[^@]+@[^.]+\.[a-z]+$/.test(emailInput.value);
+    const emailValue = emailInput.value;
     const ccNumberHasValidValue = /^\d{13,15}$/.test(ccNumber.value);
+    const ccValue = ccNumber.value;
     const zipCodeHasValidValue = /^\d{5}$/.test(zipCode.value);
+    const zipCodeValue = zipCode.value;
     const cvvHasValidValue = /^\d{3}$/.test(cvv.value);
-    
+    const cvvValue = cvv.value;
+    tooltip.style.display = 'none';
    
-    
     if(!nameInputHasValue || !emailInputHasValidValue || !isCheckBoxSelected() || !ccNumberHasValidValue ||
       !zipCodeHasValidValue || !cvvHasValidValue) {
         
         event.preventDefault();
-        addOrRemoveErrorMessages(nameInputHasValue, nameLabel, 'Name is required');
-        addOrRemoveErrorMessages(emailInputHasValidValue, emailLabel, 'Invalid email');
+        addOrRemoveErrorMessages(nameInputHasValue, nameLabel, 'Name is required', nameValue);
+        addOrRemoveErrorMessages(emailInputHasValidValue, emailLabel, 'Invalid email', emailValue);
         addOrRemoveErrorMessages(isCheckBoxSelected(), activitiesLabel, 'You must select at least one activity');
         
         if($('#payment').val() === "credit card") {
             
-            addOrRemoveErrorMessages(ccNumberHasValidValue, ccNumberLabel, 'Invalid credit card number');
-            addOrRemoveErrorMessages(zipCodeHasValidValue, zipCodeLabel, 'Invalid zip code');
-            addOrRemoveErrorMessages(cvvHasValidValue, cvvLabel, 'Invalid cvv');
+            addOrRemoveErrorMessages(ccNumberHasValidValue, ccNumberLabel, 'Invalid credit card number', ccValue);
+            addOrRemoveErrorMessages(zipCodeHasValidValue, zipCodeLabel, 'Invalid zip code', zipCodeValue);
+            addOrRemoveErrorMessages(cvvHasValidValue, cvvLabel, 'Invalid cvv', cvvValue);
         }
     } 
 });
@@ -209,15 +228,21 @@ function isCheckBoxSelected() {
 }
 
 //Function adds or removes error messages
-function addOrRemoveErrorMessages(input, label, message) {
-    if(!input) {
+function addOrRemoveErrorMessages(input, label, message, value) {
+    if(value === '') {
+        label.classList.add('clearfix');
+        $(label).attr('content', 'Field is empty');
+    }
+    else if(!input) {
             label.classList.add('clearfix');
             $(label).attr('content', message); // Found code at: https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin?lq=1 by username: Nick Kline and edited by username: Eric
-        }
-        else {
-            label.classList.remove('clearfix');
-        }
+    }
+    else {
+        label.classList.remove('clearfix');
+    }
 }
+
+
 
 
 

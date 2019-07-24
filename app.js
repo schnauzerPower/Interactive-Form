@@ -1,7 +1,7 @@
 //1.FOCUS ON THE FIRST FIELD
 const nameInput = document.getElementsByTagName('input')[0];
 $(nameInput).focus();
-const tooltip = document.querySelector('.tooltip');
+
 
 //2. JOB ROLE SECTION 
 
@@ -55,8 +55,8 @@ function generateColorSelectionOptions(...options) {  // Found code at: https://
     while(colorSelection.options.length > 0) {
         colorSelection.remove(colorSelection.options.length - 1);
     }
-    for(var i = 0; i < options.length; i++) {
-        var opt = document.createElement('option');
+    for(let i = 0; i < options.length; i++) {
+        const opt = document.createElement('option');
         opt.textContent = options[i];
         const val = options[i].replace(/\s/, "").toLowerCase();
         opt.value = val;
@@ -94,7 +94,7 @@ activities.addEventListener('change', function(event){
 //Function disables checkboxes where there is a time conflict
 function disableCheckboxes(event, className) {
     
-    for(var i = 0; i < checkboxes.length; i++) {
+    for(let i = 0; i < checkboxes.length; i++) {
         if($(event.target).prop('checked') === true && checkboxes[i].classList.contains(className) && $(checkboxes[i]).prop('checked')===false) {
             checkboxes[i].disabled = true;
         }
@@ -159,6 +159,7 @@ paymentSelection.addEventListener('change', function(event){
 //6. FORM VALIDATION
 
 //error message in real time on email input field
+const tooltip = document.querySelector('.tooltip');
 const emailInput = document.getElementsByTagName('input')[1];
 emailInput.addEventListener('input', function(){
     const emailInputHasValidValue = /^[^@]+@[^.]+\.[a-z]+$/.test(emailInput.value);
@@ -197,27 +198,32 @@ btn.addEventListener('click', function(event){
     const cvvValue = cvv.value;
     tooltip.style.display = 'none';
    
-    if(!nameInputHasValue || !emailInputHasValidValue || !isCheckBoxSelected() || !ccNumberHasValidValue ||
-      !zipCodeHasValidValue || !cvvHasValidValue) {
+    if($('#payment').val() !== "credit card") {
+        
+        if(!nameInputHasValue || !emailInputHasValidValue || !isCheckBoxSelected()) {
         
         event.preventDefault();
         addOrRemoveErrorMessages(nameInputHasValue, nameLabel, 'Name is required', nameValue);
         addOrRemoveErrorMessages(emailInputHasValidValue, emailLabel, 'Invalid email', emailValue);
         addOrRemoveErrorMessages(isCheckBoxSelected(), activitiesLabel, 'You must select at least one activity');
-        
-        if($('#payment').val() === "credit card") {
-            
-            addOrRemoveErrorMessages(ccNumberHasValidValue, ccNumberLabel, 'Invalid credit card number', ccValue);
-            addOrRemoveErrorMessages(zipCodeHasValidValue, zipCodeLabel, 'Invalid zip code', zipCodeValue);
-            addOrRemoveErrorMessages(cvvHasValidValue, cvvLabel, 'Invalid cvv', cvvValue);
         }
-    } 
+    }
+    else if(!nameInputHasValue || !emailInputHasValidValue || !isCheckBoxSelected() || !ccNumberHasValidValue ||
+      !zipCodeHasValidValue || !cvvHasValidValue) {
+        event.preventDefault();
+        addOrRemoveErrorMessages(nameInputHasValue, nameLabel, 'Name is required', nameValue);
+        addOrRemoveErrorMessages(emailInputHasValidValue, emailLabel, 'Invalid email', emailValue);
+        addOrRemoveErrorMessages(isCheckBoxSelected(), activitiesLabel, 'You must select at least one activity');
+        addOrRemoveErrorMessages(ccNumberHasValidValue, ccNumberLabel, 'Invalid credit card number', ccValue);
+        addOrRemoveErrorMessages(zipCodeHasValidValue, zipCodeLabel, 'Invalid zip code', zipCodeValue);
+        addOrRemoveErrorMessages(cvvHasValidValue, cvvLabel, 'Invalid cvv', cvvValue);
+    }
 });
 
 //Function checks if at least one checkbox is selected
 function isCheckBoxSelected() {
     let selectedCheckBoxes = 0;
-    for(var i = 0; i < checkboxes.length; i++) {
+    for(let i = 0; i < checkboxes.length; i++) {
         if($(checkboxes[i]).prop('checked') === true) {
             selectedCheckBoxes++;
         }
